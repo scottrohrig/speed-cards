@@ -1,0 +1,7 @@
+[
+    {
+        "question": "What is the window property called that allows us to access a Storage object and store data across browswer sessions?",
+        "options": ["sessionStorage", "localStorage", "browserStorage", "storage"],
+        "answer": "localStorage"
+    }
+]
