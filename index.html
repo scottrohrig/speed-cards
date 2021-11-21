@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Cards</title>
+    <link rel="stylesheet" href="assets/styles/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-wrapper">
+            <h1>Spē<p>edu</p>cation</h1>
+            <div class="countdown">Time Remaining:
+                <span class="timer">60</span>s
+            </div>
+        </div>
+    </header>
+    <main>
+        <form class="card" id="question-card">
+            <div class="card-header">
+                <h2 class="question">
+                    <span class="card-number">1. </span>What is the window property called that allows us to access a Storage object and store data across browser sessions?
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="answers">
+                    <div class="answer">
+                        <p class="answer-text"><span class="answer-letter">A. </span>sessionStorage</p>
+                    </div>
+                    <div class="answer">
+                        <p class="answer-text">B. <span class="answer-letter"></span>
+                        localStorage</p>
+                    </div>
+                    <div class="answer">
+                        <p class="answer-text"><span class="answer-letter">C. </span>
+                        browserStorage</p>
+                    </div>
+                    <div class="answer">
+                        <p class="answer-text"><span class="answer-letter">D. </span>
+                        This is a longer test answer to see how it looks. What do you think?</p>
+                    </div>
+                    <button type="submit" class="submit-btn">SUBMIT</button>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="response">
+                    <h2> Correct!</h2>
+                </div>
+                <p class="response-info">localStorage is the name of the window property that allows us to access and store data across browser sessions.</p>
+
+            </div>
+        </form>
+        <div class="stats-wrapper">
+            <div class="stats-left">stats left... what should this say?</div>
+            <div class="score-box">
+                <p id="score-label">Score: 
+                    <span id="score">30</span>
+                </p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-wrapper">
+            <h2>
+                &copy;2021 Spē<p>edu</p>, Inc<span>.</span>
+            </h2>
+        </div>
+    </footer>
+        
+    <script src="assets/scripts/main.js"></script>
+</body>
+</html>
