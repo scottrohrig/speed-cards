@@ -177,16 +177,8 @@ footer span {
     color: var(--text-on-p);
 }
 
-/* Submit btn */
-.submit-btn { 
-    background: var(--tertiary);
-    border: none;
-    color: var(--p-dark);
-    font-size: 1.2em;
-    font-weight: 900;
-}
 .answer,
-.submit-btn {
+.btn {
     
     border-radius: .3em;
     
@@ -218,6 +210,17 @@ answer > * {
     font-style: italic;
 }
 
+/* Submit btn */
+.btn { 
+    background: var(--tertiary);
+    border: none;
+    color: var(--p-dark);
+    font-size: 1.2em;
+    font-weight: 900;
+}
+.btn:hover {
+    background: var(--t-dark);
+}
 
 .card-footer {
     opacity: 0;
