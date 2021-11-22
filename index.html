@@ -17,39 +17,14 @@
         </div>
     </header>
     <main>
-        <button type="submit" class="btn" id="start-btn">Start Quiz</button>
         <form class="card" id="question-card">
             <div class="card-header">
-                <h2 class="question">
-                    <span class="card-number">1. </span>THIS IS THE DEFAULT QUESTION THAT SHOULD BE REMOVED ON START BTN PRESSED.
-                </h2>
+                <input type="hidden" name="card-submit" value="something">
+                <button type="submit" class="btn" id="start-btn">Start Quiz</button>
             </div>
             <div class="card-body">
-                <div class="answers">
-                    <div class="answer">
-                        <p class="answer-text"><span class="answer-letter">A. </span>sessionStorage</p>
-                    </div>
-                    <div class="answer">
-                        <p class="answer-text">B. <span class="answer-letter"></span>
-                        localStorage</p>
-                    </div>
-                    <div class="answer">
-                        <p class="answer-text"><span class="answer-letter">C. </span>
-                        browserStorage</p>
-                    </div>
-                    <div class="answer">
-                        <p class="answer-text"><span class="answer-letter">D. </span>
-                        This is a longer test answer to see how it looks. What do you think?</p>
-                    </div>
-                    <button type="submit" class="btn">SUBMIT</button>
-                </div>
             </div>
             <div class="card-footer">
-                <div class="response">
-                    <h2> Correct!</h2>
-                </div>
-                <p class="response-info">localStorage is the name of the window property that allows us to access and store data across browser sessions.</p>
-
             </div>
         </form>
         <div class="stats-wrapper">
