@@ -53,16 +53,19 @@ const onSelectAnswer = function(e) {
 const cardTaskHandler = function(e) {
     e.preventDefault();
 
-    if (e.target.closest('button')){
-        var card = e.currentTarget
-        let footer = card.querySelector('.card-footer')
-        card.className = (card.className === 'card') ? 'card selected' : 'card'
-        footer.style.opacity = (footer.style.opacity === '100') ? '0' : '100';
+    if (e.target.matches('.submit')){
+        checkAnswer(e);
+        showResponse(e);
         }
     
     var selectedAnswer = false;
 
-    // issue: click event triggers on the sub-elements (eg, text)
+    if (e.target.matches('.answer') || e.target.matches('.submit')) {
+        var t_bg = e.target.style.backgroundColor;
+        e.target.style.backgroundColor = 'var(--t-light)';
+        setTimeout(() => {e.target.style.backgroundColor = t_bg}, 250);
+    }
+    
     var answer = e.target.closest('.answer');
     if (answer) {
         selectedAnswer = true;
@@ -78,6 +81,18 @@ const cardTaskHandler = function(e) {
     }
     
 };
+
+const checkAnswer = (e) => {
+    // validates whether response is correct or not 
+    // need access to the dataObj responses 'explanation'
+}
+
+const showResponse = (e) => {
+    var card = e.currentTarget
+    let footer = card.querySelector('.card-footer')
+    card.className = (card.className === 'card') ? 'card selected' : 'card'
+    footer.style.opacity = (footer.style.opacity === '100') ? '0' : '100';
+}
 
 const questionCardStyleToggle = function(e) {
     // nada... ¯\_(ツ)_/¯
@@ -137,7 +152,7 @@ const createQuestionCard = function(cardDataObj) {
         let sections = [];
         for (let title of sectionTitles) {
             // create div elements
-            let section = createEl(tag='div', className=title);          
+            let section = createEl(tag='section', className=title);          
             sections.push(section);
         }
         return sections
@@ -146,25 +161,22 @@ const createQuestionCard = function(cardDataObj) {
 
     const makeQuestion = (section, number,question) => {
         let h2 = createEl(tag='h2', className='question')
-        let span = createEl(tag='span', className='card-number')
-        span.innerText = number+'. ';
-        h2.appendChild(span);
-        h2.innerText += question;
+        h2.innerText = number + '. ' + question;
         section.appendChild(h2)
     }
     const makeAnswers = (cardBody, answers) => {
-        let letters = ['A.', 'B.', 'C.', 'D.'];
+        let letters = ['A', 'B', 'C', 'D'];
         // shuffle(letters)
-        let answersWrapper = document.createElement('div');
+        let answersWrapper = document.createElement('ul');
         answersWrapper.className = 'answers';
         for (const answer of answers) {
-            let answerDiv = document.createElement('div');
+            let answerListItem = document.createElement('li');
             let letter = letters.shift()
-            answerDiv.className = 'answer';
-            answerDiv.innerHTML = `<p class='answer-text><span class='answer-letter'>${letter} </span>${answer}</p>`;
-            answersWrapper.appendChild(answerDiv);
+            answerListItem.className = 'answer';
+            answerListItem.textContent = `${letter}. ${answer}`
+            answersWrapper.appendChild(answerListItem);
         }
-        const submitBtn = createEl(tag='button', className='btn');
+        const submitBtn = createEl(tag='button', className='btn submit');
         submitBtn.textContent = 'SUBMIT';
         answersWrapper.appendChild(submitBtn);
         cardBody.appendChild(answersWrapper);
@@ -219,7 +231,9 @@ const clearElement = (parent) => {
 
 };
 
-const startQuiz = () => {
+const startQuiz = (e) => {
+    e.preventDefault();
+    console.log('submitting...')
     if (currentQuestionIdx < quizData.length) {
         clearElement(questionCard);
         loadQuiz();
@@ -237,7 +251,9 @@ const startQuiz = () => {
 
 // ----- EVENT LISTENERS ----- 
 questionCard.addEventListener('click', cardTaskHandler);
-startButton.addEventListener('click', startQuiz);
+questionCard.addEventListener('submit', startQuiz);
+
+// startButton.addEventListener('click', startQuiz);
 
 // BUG: cannot bind submit event. Nothing happens ¯\_(ツ)_/¯
 // questionCard.addEventListener('submit', questionCardStyleToggle);

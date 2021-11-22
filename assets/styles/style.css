@@ -175,6 +175,7 @@ footer span {
 .answer {
     /* background: var(--secondary); */
     color: var(--text-on-p);
+    list-style-type: none;
 }
 
 .answer,
@@ -209,6 +210,10 @@ answer > * {
     background: var(--secondary);
     color: var(--text-on-p);
     font-style: italic;
+}
+
+#start-btn {
+    margin-top: 100px;
 }
 
 /* Submit btn */
