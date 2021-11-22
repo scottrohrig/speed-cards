@@ -14,6 +14,10 @@
 // ----- CONSTANTS ----- 
 const questionCard = document.querySelector('#question-card');
 const answersWrapper = document.querySelector('.answers');
+const startButton = document.querySelector('#start-btn');
+const cardHeader = document.querySelector('#card-header');
+const cardBody = document.querySelector('#card-body');
+const cardFooter = document.querySelector('#card-footer');
 
 
 // ----- HELPER FUNCTIONS -----
@@ -62,15 +66,7 @@ const cardTaskHandler = function(e) {
     var answer = e.target.closest('.answer');
     if (answer) {
         selectedAnswer = true;
-        switch (answer.className) {
-            case 'answer':
-                answer.className = 'answer chosen-answer'
-                break;
-            default:
-                answer.className = 'answer';
-                selectedAnswer = false;
-                break;
-            }
+        answer.className = (answer.className === 'answer chosen-answer') ? 'answer' : 'answer chosen-answer'
             
         // unselect other answers on newly selected answer.
         const answersArr = document.querySelectorAll('.answer');
@@ -215,14 +211,33 @@ const createQuestionCard = function(cardDataObj) {
     }
 };
 
+const clearElement = (parent) => {
+
+    while (parent.firstChild) {
+       parent.removeChild(parent.firstChild);
+    }
+
+};
+
+const startQuiz = () => {
+    if (currentQuestionIdx < quizData.length) {
+        clearElement(questionCard);
+        loadQuiz();
+        currentQuestionIdx++;
+    } else {
+        // showStatsScreen();
+    }
+};
+
 
 // loads the quiz data and creates the elements for the first card.
 // TODO: add me after 'START' button pressed
-loadQuiz();
+// loadQuiz();
 
 
 // ----- EVENT LISTENERS ----- 
 questionCard.addEventListener('click', cardTaskHandler);
+startButton.addEventListener('click', startQuiz);
 
 // BUG: cannot bind submit event. Nothing happens ¯\_(ツ)_/¯
 // questionCard.addEventListener('submit', questionCardStyleToggle);

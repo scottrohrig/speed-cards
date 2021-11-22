@@ -183,6 +183,7 @@ footer span {
     border-radius: .3em;
     
     width: 100%;
+    max-width: 600px;
     margin-top: .5em;
     margin-bottom: .5em;
     margin-left: auto;
