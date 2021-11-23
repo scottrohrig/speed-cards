@@ -135,6 +135,7 @@ footer span {
     min-width: 250px;
     max-width: 600px;
     min-height: 250px;
+    max-height: 450px;
     /* shape */
     border-radius: .5em;
     box-shadow: 0 1px .25em rgba(0, 0, 0,.25);
@@ -166,10 +167,6 @@ footer span {
 .selected {
     background: var(--primary);
     color: var(--text-on-p);
-}
-
-.question {
-    /* display: none; */
 }
 
 .answer {
@@ -213,7 +210,7 @@ answer > * {
 }
 
 #start-btn {
-    margin-top: 100px;
+    margin: 100px auto 50px;
 }
 
 /* Submit btn */

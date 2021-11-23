@@ -1,6 +1,6 @@
 /* SPEEDUCATION APP */
 
-// ----- ideas ----- 
+// ----- ideas ----- //
 
 // TODO: build question card 
 //      [ ] => add data attributes to cards
@@ -11,7 +11,7 @@
 //      [ ] => make a "start session" card, with the start button centered
 
 
-// ----- CONSTANTS ----- 
+// ----- CONSTANTS ----- //
 const questionCard = document.querySelector('#question-card');
 const answersWrapper = document.querySelector('.answers');
 const startButton = document.querySelector('#start-btn');
@@ -20,7 +20,7 @@ const cardBody = document.querySelector('#card-body');
 const cardFooter = document.querySelector('#card-footer');
 
 
-// ----- HELPER FUNCTIONS -----
+// ----- HELPER FUNCTIONS ----- //
 /* Randomize array in-place using Durstenfeld shuffle algorithm */
 function shuffle(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -41,7 +41,7 @@ const createEl = (tag, className) => {
 }
 
 
-// ----- FUNCTIONALITY ----- 
+// ----- FUNCTIONALITY ----- //
 
 /** Entry point for questionCard events.
  * Delegates events  
@@ -122,8 +122,6 @@ const quizData = [
     }
 ]
 
-var currentQuestionIdx = 0;
-
 /**
  * Creates a data object from the question data array and creates the first question card.
  */
@@ -138,25 +136,14 @@ const loadQuiz = () => {
     createQuestionCard(cardDataObj);
 };
 
-
+/** Returns Array: cardHeader, cardBody, cardFooter elements */
+const getCardSections = () => {
+    return [cardHeader, cardBody, cardFooter]
+};
 
 const createQuestionCard = function(cardDataObj) {
     
-    // behind the scenes
-    const makeCardSections = () => {
-        // questionCard already defined
-        // const cardDiv = document.createElement('div');
-
-        // create main card layout
-        let sectionTitles = ['card-header','card-body','card-footer'];
-        let sections = [];
-        for (let title of sectionTitles) {
-            // create div elements
-            let section = createEl(tag='section', className=title);          
-            sections.push(section);
-        }
-        return sections
-    };
+    // ---- behind the scenes ---- //
     const addSectionContent = (section, cardDataObj) => {
 
     const makeQuestion = (section, number,question) => {
@@ -166,17 +153,20 @@ const createQuestionCard = function(cardDataObj) {
     }
     const makeAnswers = (cardBody, answers) => {
         let letters = ['A', 'B', 'C', 'D'];
-        // shuffle(letters)
+        // shuffle(answers);
         let answersWrapper = document.createElement('ul');
         answersWrapper.className = 'answers';
         for (const answer of answers) {
             let answerListItem = document.createElement('li');
             let letter = letters.shift()
+            answerListItem.dataset.questionId = currentQuestionIdx;
+            answerListItem.dataset.letter = letter;
             answerListItem.className = 'answer';
             answerListItem.textContent = `${letter}. ${answer}`
             answersWrapper.appendChild(answerListItem);
         }
         const submitBtn = createEl(tag='button', className='btn submit');
+        // submitBtn.id = 'submit-btn';
         submitBtn.textContent = 'SUBMIT';
         answersWrapper.appendChild(submitBtn);
         cardBody.appendChild(answersWrapper);
@@ -192,7 +182,6 @@ const createQuestionCard = function(cardDataObj) {
 
         cardFooter.appendChild(responseWrapper);
         cardFooter.appendChild(responseInfo)
-
 
     }
 
@@ -215,16 +204,18 @@ const createQuestionCard = function(cardDataObj) {
     };
 
     // business 
-    const sections = makeCardSections();
+    const sections = getCardSections();
 
     for (let section of sections){
         addSectionContent(section, cardDataObj);
         questionCard.appendChild(section);
     }
+    questionCard.dataset.questionId = currentQuestionIdx;
 };
 
 const clearElement = (parent) => {
 
+    if (!parent.children) {return}
     while (parent.firstChild) {
        parent.removeChild(parent.firstChild);
     }
@@ -233,9 +224,12 @@ const clearElement = (parent) => {
 
 const startQuiz = (e) => {
     e.preventDefault();
-    console.log('submitting...')
+    questionCard.className = 'card';
     if (currentQuestionIdx < quizData.length) {
-        clearElement(questionCard);
+        clearElement(cardHeader);
+        clearElement(cardBody);
+        clearElement(cardFooter);
+        // clearElement(questionCard);
         loadQuiz();
         currentQuestionIdx++;
     } else {
@@ -244,16 +238,12 @@ const startQuiz = (e) => {
 };
 
 
-// loads the quiz data and creates the elements for the first card.
-// TODO: add me after 'START' button pressed
-// loadQuiz();
+// ----- GLOBALS ----- //
+var currentQuestionIdx = 0;
 
 
-// ----- EVENT LISTENERS ----- 
+// ----- EVENT LISTENERS ----- //
 questionCard.addEventListener('click', cardTaskHandler);
-questionCard.addEventListener('submit', startQuiz);
+startButton.addEventListener('click', startQuiz);
 
-// startButton.addEventListener('click', startQuiz);
 
-// BUG: cannot bind submit event. Nothing happens ¯\_(ツ)_/¯
-// questionCard.addEventListener('submit', questionCardStyleToggle);
