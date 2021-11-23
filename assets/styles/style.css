@@ -126,6 +126,30 @@ footer span {
     color: var(--secondary);
 }
 
+
+/* ANIMATIONS */
+.fadeTimer {
+    animation: flash ease 1s;
+    animation-iteration-count: infinite;
+    -webkit-animation: flash ease 1s;
+    -moz-animation: flash ease 1s;
+    -o-animation: flash ease 1s;
+    -ms-animation: flash ease 1s;
+}
+
+@keyframes flash {
+    0% {
+        color: var(--s-light);
+    }
+    75% {
+        color: var(--text-on-p);
+    }
+    100% {
+        color: var(--text-on-p);
+    }
+}
+
+
 .card {
     /* colors */
     background: #fff;

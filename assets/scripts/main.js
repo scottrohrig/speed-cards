@@ -2,13 +2,7 @@
 
 // ----- ideas ----- //
 
-// TODO: build question card 
-//      [ ] => add data attributes to cards
-//      [ ] => add data attributes to answers
-//      [ ] => randomize answer order
-//      [*] => remove 'chosen-answer' from other answers on select
-//              - consider using data attrs.
-//      [ ] => make a "start session" card, with the start button centered
+// TODO: 
 
 
 // ----- CONSTANTS ----- //
@@ -43,16 +37,25 @@ const createEl = (tag, className) => {
 
 // ----- FUNCTIONALITY ----- //
 
-/** Entry point for questionCard events.
- * Delegates events  
- */
-const onSelectAnswer = function(e) {
+const updateAnswerBackground = function(answer) {
+    answer.className = (answer.className === 'answer chosen-answer') ? 'answer' : 'answer chosen-answer'
     
+    // unselect other answers on newly selected answer.
+    const answersArr = document.querySelectorAll('.answer');
+    for (let possibleAnswer of answersArr) {
+        if (possibleAnswer !== answer) {
+            possibleAnswer.className = 'answer';
+        }
+    }
 } 
 
+/** Entry point for Card events.
+ * Delegates events  
+ */
 const cardTaskHandler = function(e) {
     e.preventDefault();
 
+    
     if (e.target.matches('.submit')){
         checkAnswer(e);
         showResponse(e);
@@ -66,18 +69,11 @@ const cardTaskHandler = function(e) {
         setTimeout(() => {e.target.style.backgroundColor = t_bg}, 250);
     }
     
-    var answer = e.target.closest('.answer');
-    if (answer) {
+    var isAnswer = e.target.matches('.answer');
+    if (isAnswer) {
+        var answer = e.target;
         selectedAnswer = true;
-        answer.className = (answer.className === 'answer chosen-answer') ? 'answer' : 'answer chosen-answer'
-            
-        // unselect other answers on newly selected answer.
-        const answersArr = document.querySelectorAll('.answer');
-        for (let possibleAnswer of answersArr) {
-            if (possibleAnswer !== answer) {
-                possibleAnswer.className = 'answer';
-            }
-        }
+        updateAnswerBackground(answer);
     }
     
 };
@@ -231,12 +227,38 @@ const startQuiz = (e) => {
         clearElement(cardFooter);
         // clearElement(questionCard);
         loadQuiz();
+        startCountdown();
         currentQuestionIdx++;
     } else {
         // showStatsScreen();
     }
 };
 
+/** sets the time-remaining to 60-1 and decreases it by intervals of 1 second */
+const startCountdown = () => {
+    // var displayedSeconds = 59;
+    var displayedSeconds = 9;
+    var countdownEl = document.querySelector('#time-remaining')
+    setInterval(() => {
+        if (displayedSeconds >= 0) {
+            countdownEl.textContent = parseInt(displayedSeconds);
+            flashCountdown();
+            displayedSeconds--;
+        } 
+        
+    }, 1000)
+};
+
+const flashCountdown = () => {
+    var countdownEl = document.querySelector('#time-remaining');
+    if (countdownEl.textContent == 5){
+        countdownEl.className = 'timer fadeTimer'
+    } else if (countdownEl.textContent <= 0) {
+        countdownEl.style.color = 'var(--s-dark)';
+        countdownEl.className = 'timer'
+        
+    }
+}
 
 // ----- GLOBALS ----- //
 var currentQuestionIdx = 0;
