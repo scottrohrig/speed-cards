@@ -37,58 +37,14 @@ const createEl = (tag, className) => {
 
 // ----- FUNCTIONALITY ----- //
 
-const updateAnswerBackground = function(answer) {
-    answer.className = (answer.className === 'answer chosen-answer') ? 'answer' : 'answer chosen-answer'
-    
-    // unselect other answers on newly selected answer.
-    const answersArr = document.querySelectorAll('.answer');
-    for (let possibleAnswer of answersArr) {
-        if (possibleAnswer !== answer) {
-            possibleAnswer.className = 'answer';
-        }
-    }
-} 
-
-/** Entry point for Card events.
- * Delegates events  
- */
-const cardTaskHandler = function(e) {
-    e.preventDefault();
-
-    
-    if (e.target.matches('.submit')){
-        checkAnswer(e);
-        showResponse(e);
-        }
-    
-    var selectedAnswer = false;
-
+const highlightElement = function (e) {
+    // highlight animation
     if (e.target.matches('.answer') || e.target.matches('.submit')) {
         var t_bg = e.target.style.backgroundColor;
         e.target.style.backgroundColor = 'var(--t-light)';
         setTimeout(() => {e.target.style.backgroundColor = t_bg}, 250);
     }
-    
-    var isAnswer = e.target.matches('.answer');
-    if (isAnswer) {
-        var answer = e.target;
-        selectedAnswer = true;
-        updateAnswerBackground(answer);
-    }
-    
 };
-
-const checkAnswer = (e) => {
-    // validates whether response is correct or not 
-    // need access to the dataObj responses 'explanation'
-}
-
-const showResponse = (e) => {
-    var card = e.currentTarget
-    let footer = card.querySelector('.card-footer')
-    card.className = (card.className === 'card') ? 'card selected' : 'card'
-    footer.style.opacity = (footer.style.opacity === '100') ? '0' : '100';
-}
 
 const questionCardStyleToggle = function(e) {
     // nada... ¯\_(ツ)_/¯
@@ -99,24 +55,6 @@ const questionCardStyleToggle = function(e) {
         card.className = (card.className === 'card') ? 'card selecte' : 'card'
         }
 }
-
-
-const quizData = [
-    {
-        question: "What is the window property called that allows us to access a Storage object and store data across browswer sessions?",
-        answers: ["sessionStorage", "localStorage", "browserStorage", "storage"],
-        responses: {
-                true:"localStorage is the name of the window property that allows us to access and store data across browser sessions.",
-                false:"Try again.."
-                    },
-        correct: 1
-    },
-    {
-        question: "What method returns a new element of a given tagName to the current document?",
-        answers: ["append()", "setAttribute()", "createAttribute()", "createElement()"],
-        correct: 3
-    }
-]
 
 /**
  * Creates a data object from the question data array and creates the first question card.
@@ -147,16 +85,18 @@ const createQuestionCard = function(cardDataObj) {
         h2.innerText = number + '. ' + question;
         section.appendChild(h2)
     }
-    const makeAnswers = (cardBody, answers) => {
+    const makeAnswers = (cardBody, cardDataObj) => {
         let letters = ['A', 'B', 'C', 'D'];
+        var answers = cardDataObj.answers;        
+        
         // shuffle(answers);
         let answersWrapper = document.createElement('ul');
         answersWrapper.className = 'answers';
-        for (const answer of answers) {
+        for (const [idx, answer] of answers.entries()) {
             let answerListItem = document.createElement('li');
-            let letter = letters.shift()
+            let letter = letters.shift();
             answerListItem.dataset.questionId = currentQuestionIdx;
-            answerListItem.dataset.letter = letter;
+            answerListItem.dataset.letter = idx;
             answerListItem.className = 'answer';
             answerListItem.textContent = `${letter}. ${answer}`
             answersWrapper.appendChild(answerListItem);
@@ -168,13 +108,12 @@ const createQuestionCard = function(cardDataObj) {
         cardBody.appendChild(answersWrapper);
     };
 
-    const makeFooterResponse = (cardFooter) => {
+    const makeFooterResponse = (cardFooter, cardDataObj) => {
         let responseWrapper = createEl(tag='div', className='response');
         let responseTitle = document.createElement('h2');
-        responseTitle.textContent = 'Correct!';
+        // responseTitle.textContent = cardDataObj[currentQuestionIdx].responses;
         responseWrapper.appendChild(responseTitle)
         let responseInfo = createEl(tag='p', className='response-info')
-        responseInfo.textContent = '"localStorage" is the name of the window property that allows us to access and store data across browser sessions.'
 
         cardFooter.appendChild(responseWrapper);
         cardFooter.appendChild(responseInfo)
@@ -186,13 +125,13 @@ const createQuestionCard = function(cardDataObj) {
                 makeQuestion(section, currentQuestionIdx+1 ,cardDataObj.question)
                 break;
             case 'card-body':
-                makeAnswers(section, cardDataObj.answers);
+                makeAnswers(section, cardDataObj);
                 // add Submit button
                 
                 break;
             case 'card-footer': 
                 // makeFooterResponse(section, cardDataObj.responses)
-                makeFooterResponse(section)
+                makeFooterResponse(section, cardDataObj);
                 break;
             default:
                 break;
@@ -218,8 +157,8 @@ const clearElement = (parent) => {
 
 };
 
+
 const startQuiz = (e) => {
-    e.preventDefault();
     questionCard.className = 'card';
     if (currentQuestionIdx < quizData.length) {
         clearElement(cardHeader);
@@ -228,6 +167,19 @@ const startQuiz = (e) => {
         // clearElement(questionCard);
         loadQuiz();
         startCountdown();
+    } else {
+        // showStatsScreen();
+    }
+};
+
+const showNextQuestion = () => {
+    questionCard.className = 'card';
+    if (currentQuestionIdx < quizData.length) {
+        clearElement(cardHeader);
+        clearElement(cardBody);
+        clearElement(cardFooter);
+        // clearElement(questionCard);
+        loadQuiz();
         currentQuestionIdx++;
     } else {
         // showStatsScreen();
@@ -236,14 +188,14 @@ const startQuiz = (e) => {
 
 /** sets the time-remaining to 60-1 and decreases it by intervals of 1 second */
 const startCountdown = () => {
-    // var displayedSeconds = 59;
-    var displayedSeconds = 9;
+    timeRemaining = startTime;
+    // var displayedSeconds = 9;
     var countdownEl = document.querySelector('#time-remaining')
     setInterval(() => {
-        if (displayedSeconds >= 0) {
-            countdownEl.textContent = parseInt(displayedSeconds);
+        if (timeRemaining >= 0) {
+            countdownEl.textContent = parseInt(timeRemaining);
             flashCountdown();
-            displayedSeconds--;
+            timeRemaining--;
         } 
         
     }, 1000)
@@ -258,14 +210,119 @@ const flashCountdown = () => {
         countdownEl.className = 'timer'
         
     }
+};
+
+const showResponse = (isCorrect) => {
+
+    let footer = questionCard.querySelector('.card-footer')
+    var title = footer.querySelector('h2');
+    var text = footer.querySelector('p');
+    
+    footer.style.opacity = (footer.style.opacity === '100') ? '0' : '100';
+    questionCard.className = (questionCard.className === 'card') ? 'card selected' : 'card'
+
+    title.textContent = isCorrect ? 'Correct' : 'Incorrect'
+    text.textContent = quizData[currentQuestionIdx].responses[isCorrect];
+
+};
+
+const isCorrectAnswer = () => (selectedAnswer === quizData[currentQuestionIdx].correct);
+
+const onSubmitButtonPressed = (submitBtn) => {
+    var isCorrect = isCorrectAnswer(submitBtn);
+    if (states.selected) {
+        showResponse(isCorrect);
+    }
+    
 }
+
+/** handles marking answer as selected and updating UI
+ * 
+ * @param {Node} answer 
+ */
+const onAnswerSelected = function(answer) {
+    
+    if (answer.className === 'answer') {
+        answer.className = 'answer chosen-answer';
+        answer.dataset.selected = true;
+        states.selected = true;
+        selectedAnswer = parseInt(answer.dataset.letter);
+    } else {
+        answer.className = 'answer';
+        selectedAnswer = null;
+        states.selected = false;
+    }
+
+    // unselect other answers on newly selected answer.
+    const answersArr = document.querySelectorAll('.answer');
+    for (let possibleAnswer of answersArr) {
+        if (possibleAnswer !== answer) {
+            possibleAnswer.className = 'answer';
+            possibleAnswer.dataset.selected = false;
+        }
+    }
+};
+
+/** Entry point for Card events.
+ * Delegates events  
+ */
+ const cardEventHandler = function(e) {
+    // e.preventDefault();
+    var isAnswer = e.target.matches('.answer');
+    var isSubmit = e.target.matches('button');
+
+    
+    
+    // select answer
+    if (isAnswer) {
+        var answer = e.target;
+        onAnswerSelected(answer);
+    }
+
+    if (isSubmit && states.selected) {
+        onSubmitButtonPressed(e);
+    }
+};
 
 // ----- GLOBALS ----- //
 var currentQuestionIdx = 0;
+var selectedAnswer
+var timeRemaining = 59;
+var isAnswerSelected = false;
 
+
+const startTime = 59;
+
+const states = {
+    selected: false,
+    running: false
+}
+
+const quizData = [  // Array of question objects
+    {
+        question: "What is the window property called that allows us to access a Storage object and store data across browswer sessions?",
+        answers: ["sessionStorage", "localStorage", "browserStorage", "storage"],
+        responses: {
+                true:"localStorage is the name of the window property that allows us to access and store data across browser sessions.",
+                false:"Try again.."},
+        correct: 1
+    },
+    {
+        question: "What method returns a new element of a given tagName to the current document?",
+        answers: ["append()", "setAttribute()", "createAttribute()", "createElement()"],
+        responses: {},
+        correct: 3
+    },
+    {
+        question: "What method returns a new element of a given tagName to the current document?",
+        answers: ["append()", "setAttribute()", "createAttribute()", "createElement()"],
+        responses: {},
+        correct: 3
+    }
+]
 
 // ----- EVENT LISTENERS ----- //
-questionCard.addEventListener('click', cardTaskHandler);
+questionCard.addEventListener('click', cardEventHandler);
 startButton.addEventListener('click', startQuiz);
 
 
