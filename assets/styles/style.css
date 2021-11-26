@@ -126,6 +126,30 @@ footer span {
     color: var(--secondary);
 }
 
+
+/* ANIMATIONS */
+.fadeTimer {
+    animation: flash ease 1s;
+    animation-iteration-count: infinite;
+    -webkit-animation: flash ease 1s;
+    -moz-animation: flash ease 1s;
+    -o-animation: flash ease 1s;
+    -ms-animation: flash ease 1s;
+}
+
+@keyframes flash {
+    0% {
+        color: var(--s-light);
+    }
+    75% {
+        color: var(--text-on-p);
+    }
+    100% {
+        color: var(--text-on-p);
+    }
+}
+
+
 .card {
     /* colors */
     background: #fff;
@@ -135,6 +159,7 @@ footer span {
     min-width: 250px;
     max-width: 600px;
     min-height: 250px;
+    max-height: 450px;
     /* shape */
     border-radius: .5em;
     box-shadow: 0 1px .25em rgba(0, 0, 0,.25);
@@ -168,29 +193,25 @@ footer span {
     color: var(--text-on-p);
 }
 
-.question {
-    /* display: none; */
-}
-
-.answer {
+.answer,
+.initials {
     /* background: var(--secondary); */
     color: var(--text-on-p);
+    list-style-type: none;
 }
 
-/* Submit btn */
-.submit-btn { 
-    background: var(--tertiary);
-    border: none;
-    color: var(--p-dark);
-    font-size: 1.2em;
-    font-weight: 900;
+.initials {
+    color: var(--primary);
 }
+
 .answer,
-.submit-btn {
+.btn,
+.initials {
     
     border-radius: .3em;
     
     width: 100%;
+    max-width: 600px;
     margin-top: .5em;
     margin-bottom: .5em;
     margin-left: auto;
@@ -203,9 +224,9 @@ footer span {
     background: var(--bg);
     color: var(--p-dark);
 }
-answer > * {
+/* answer > * {
     pointer-events: none;
-}
+} */
 
 .answer:hover,
 .chosen-answer {
@@ -218,9 +239,25 @@ answer > * {
     font-style: italic;
 }
 
+#start-btn {
+    margin: 100px auto 50px;
+}
+
+/* Submit btn */
+.btn { 
+    background: var(--tertiary);
+    border: none;
+    color: var(--p-dark);
+    font-size: 1.2em;
+    font-weight: 900;
+}
+.btn:hover {
+    background: var(--t-dark);
+}
 
 .card-footer {
     opacity: 0;
+    min-height: 92px;
 }
 
 .response {
